@@ -47,10 +47,12 @@ TrackBuddy.prototype.processResults = function () {
       throw new Error(err)
     })
     .then(res => {
-      this.sendTrackToBackground(res[1], 'main')
-      this.sendTrackToBackground(res[2], 'disco')
-      this.sendTrackToBackground(res[4], 'dream')
-      this.sendTrackToBackground(res[5], 'garden')
+      if (res !== 'call failed') {
+        this.sendTrackToBackground(res[1], 'main')
+        this.sendTrackToBackground(res[2], 'disco')
+        this.sendTrackToBackground(res[4], 'dream')
+        this.sendTrackToBackground(res[5], 'garden')
+      }
     })
 }
 
