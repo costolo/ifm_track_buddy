@@ -13,40 +13,75 @@ const TrackBuddy = function () {
   }
 }
 
-async TrackBuddy.prototype.callNowPlayingAPI = () => {
-  const results = await $.getJSON('https://www.intergalactic.fm/ifm-system/playingnow.json')
+async function callNowPlayingAPI () {
+  let results
+  let req = new window.Request('https://www.intergalactic.fm/ifm-system/playingnow.json')
+  try {
+    results = await window.fetch(req).then(res => res.json().then(json => json))
+  } catch (err) {
+    console.log(err)
+    results = 'call failed'
+  }
   return results
 }
 
-TrackBuddy.prototype.sendTracksToBackground = () => {
-  const currentTracks = this.callNowPlayingAPI()
-  console.log(currentTracks)
+TrackBuddy.prototype.isNotDuplicate = function (track) {
+  const that = this
+  const lastTrackArr = [
+    (() => that.tracks.main.length > 0 ? that.tracks.main[that.tracks.main.length - 1].track : undefined)(),
+    (() => that.tracks.disco.length > 0 ? that.tracks.disco[that.tracks.disco.length - 1].track : undefined)(),
+    (() => that.tracks.dream.length > 0 ? that.tracks.dream[that.tracks.dream.length - 1].track : undefined)(),
+    (() => that.tracks.garden.length > 0 ? that.tracks.garden[that.tracks.garden.length - 1].track : undefined)()
+  ]
+
+  if (lastTrackArr.indexOf(track) > -1) {
+    return false
+  } else {
+    return true
+  }
 }
 
-TrackBuddy.prototype.instantiateObserver = function (node, trackArr, channel) {
-  const observer = new window.MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      let currentTrackTitle = mutation.addedNodes[2].innerText
-      let lastTrackTitle = trackArr.length > 0 ? trackArr[trackArr.length - 1].track : undefined
-      if (currentTrackTitle !== lastTrackTitle) {
-        let track = {
-          track: currentTrackTitle,
-          time: formatDate(),
-          faved: false
-        }
-        trackArr.push(track)
-        window.localStorage.setItem('tracks', JSON.stringify(this.tracks))
-        window.chrome.runtime.sendMessage({
-          channel: channel,
-          initialTracks: false,
-          indvTrack: track
-        }, null, () => {
-          console.log('sent tracks to background')
-        })
-      }
-    })
+TrackBuddy.prototype.processResults = function () {
+  callNowPlayingAPI().then(res => {
+    this.sendTrackToBackground(res[1], 'main')
+    this.sendTrackToBackground(res[2], 'disco')
+    this.sendTrackToBackground(res[4], 'dream')
+    this.sendTrackToBackground(res[5], 'garden')
   })
-  observer.observe(node, this.config)
+}
+
+TrackBuddy.prototype.sendTrackToBackground = function (trackObj, channel) {
+  let track = {
+    track: `${trackObj[0]} - ${trackObj[1]}`,
+    time: formatDate(),
+    faved: false
+  }
+
+  if (this.isNotDuplicate(track.track)) {
+    switch (channel) {
+      case 'main':
+        this.tracks.main.push(track)
+        break
+      case 'disco':
+        this.tracks.disco.push(track)
+        break
+      case 'dream':
+        this.tracks.dream.push(track)
+        break
+      case 'garden':
+        this.tracks.garden.push(track)
+        break
+    }
+
+    window.localStorage.setItem('tracks', JSON.stringify(this.tracks))
+    window.chrome.runtime.sendMessage({
+      channel: channel,
+      initialTracks: false,
+      indvTrack: track
+    }, null, () => {
+      console.log('sent tracks to background')
+    })
+  }
 }
 
 const formatDate = () => {
@@ -59,16 +94,18 @@ const formatDate = () => {
 
 const init = () => {
   const tb = new TrackBuddy()
+  tb.processResults()
+  console.log(tb.tracks)
 
   window.chrome.runtime.onMessage.addListener((msg, sender, response) => {
     if ((msg.from === 'popup') && (msg.subject === 'clicked')) {
-      response(ts.tracks)
+      response(tb.tracks)
     }
   })
 
   window.chrome.runtime.sendMessage({
     initialTracks: true,
-    tracks: ts.tracks
+    tracks: tb.tracks
   }, null, () => {
     console.log('initial tracks sent')
   })
