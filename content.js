@@ -50,7 +50,7 @@ const formatDate = () => {
   return `${intlDate}T${date.getHours()}:${minutes}`
 }
 
-const init = (() => {
+const init = () => {
   const ts = new TrackBuddy()
   ts.instantiateObserver(ts.mainNode, ts.tracks.main, 'main')
   ts.instantiateObserver(ts.discoNode, ts.tracks.disco, 'disco')
@@ -68,4 +68,6 @@ const init = (() => {
   }, null, () => {
     console.log('initial tracks sent')
   })
-})()
+}
+
+init()
