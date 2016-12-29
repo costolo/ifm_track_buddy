@@ -48,9 +48,6 @@ const formatDate = () => {
 
 const init = () => {
   const ts = new TrackBuddy()
-  ts.instantiateObserver(ts.mainNode, ts.tracks.main, 'main')
-  ts.instantiateObserver(ts.discoNode, ts.tracks.disco, 'disco')
-  ts.instantiateObserver(ts.dreamNode, ts.tracks.dream, 'dream')
 
   window.chrome.runtime.onMessage.addListener((msg, sender, response) => {
     if ((msg.from === 'popup') && (msg.subject === 'clicked')) {
