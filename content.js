@@ -2,7 +2,8 @@ const TrackBuddy = function () {
   this.tracks = JSON.parse(window.localStorage.getItem('tracks')) || {
     main: [],
     disco: [],
-    dream: []
+    dream: [],
+    garden: []
   }
 
   this.config = {
