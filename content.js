@@ -42,12 +42,16 @@ TrackBuddy.prototype.isNotDuplicate = function (track) {
 }
 
 TrackBuddy.prototype.processResults = function () {
-  callNowPlayingAPI().then(res => {
-    this.sendTrackToBackground(res[1], 'main')
-    this.sendTrackToBackground(res[2], 'disco')
-    this.sendTrackToBackground(res[4], 'dream')
-    this.sendTrackToBackground(res[5], 'garden')
-  })
+  callNowPlayingAPI()
+    .catch(err => {
+      throw new Error(err)
+    })
+    .then(res => {
+      this.sendTrackToBackground(res[1], 'main')
+      this.sendTrackToBackground(res[2], 'disco')
+      this.sendTrackToBackground(res[4], 'dream')
+      this.sendTrackToBackground(res[5], 'garden')
+    })
 }
 
 TrackBuddy.prototype.sendTrackToBackground = function (trackObj, channel) {
