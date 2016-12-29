@@ -12,6 +12,16 @@ const TrackBuddy = function () {
   }
 }
 
+async TrackBuddy.prototype.callNowPlayingAPI = () => {
+  const results = await $.getJSON('https://www.intergalactic.fm/ifm-system/playingnow.json')
+  return results
+}
+
+TrackBuddy.prototype.sendTracksToBackground = () => {
+  const currentTracks = this.callNowPlayingAPI()
+  console.log(currentTracks)
+}
+
 TrackBuddy.prototype.instantiateObserver = function (node, trackArr, channel) {
   const observer = new window.MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
