@@ -57,7 +57,7 @@ const formatDate = () => {
 }
 
 const init = () => {
-  const ts = new TrackBuddy()
+  const tb = new TrackBuddy()
 
   window.chrome.runtime.onMessage.addListener((msg, sender, response) => {
     if ((msg.from === 'popup') && (msg.subject === 'clicked')) {
