@@ -12,12 +12,13 @@
 
 #disco.active,
 #main.active,
-#dream.active {
+#dream.active,
+#garden.active {
   display: block;
 }
 
 .button { 
-  width: 32%;
+  width: 24%;
   height: 20px;
   line-height: 20px;
   text-align: center;
@@ -32,9 +33,15 @@
 
 #disco,
 #dream,
-#main {
+#main,
+#garden {
   margin: 10px 0;
   padding: 0;
+}
+
+.garden {
+  border: 1px solid #0E892F;
+  color: #0E892F;
 }
 
 .disco {
@@ -50,6 +57,11 @@
 .main {
   border: 1px solid #ff0000;
   color: #ff0000;
+}
+
+.garden.buttonActive {
+  background: #0E892F;
+  color: #fff;
 }
 
 .disco.buttonActive {
