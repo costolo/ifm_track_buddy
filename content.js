@@ -10,10 +10,6 @@ const TrackBuddy = function () {
     childList: true,
     characterData: true
   }
-
-  this.mainNode = document.getElementById('c-1')
-  this.discoNode = document.getElementById('c-2')
-  this.dreamNode = document.getElementById('c-4')
 }
 
 TrackBuddy.prototype.instantiateObserver = function (node, trackArr, channel) {
