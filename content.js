@@ -34,11 +34,7 @@ TrackBuddy.prototype.isNotDuplicate = function (track) {
     (() => that.tracks.garden.length > 0 ? that.tracks.garden[that.tracks.garden.length - 1].track : undefined)()
   ]
 
-  if (lastTrackArr.indexOf(track) > -1) {
-    return false
-  } else {
-    return true
-  }
+  return lastTrackArr.indexOf(track) > -1
 }
 
 TrackBuddy.prototype.updateInterval = function () {
