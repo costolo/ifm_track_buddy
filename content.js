@@ -41,7 +41,7 @@ TrackBuddy.prototype.isNotDuplicate = function (track) {
   }
 }
 
-TrackBuddy.prototype.processResults = function () {
+TrackBuddy.prototype.updateInterval = function () {
   callNowPlayingAPI()
     .catch(err => {
       throw new Error(err)
@@ -100,7 +100,7 @@ const formatDate = () => {
 
 const init = () => {
   const tb = new TrackBuddy()
-  tb.processResults()
+  tb.updateInterval()
   console.log(tb.tracks)
 
   window.chrome.runtime.onMessage.addListener((msg, sender, response) => {
