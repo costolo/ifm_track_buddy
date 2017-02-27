@@ -42,18 +42,24 @@ TrackBuddy.prototype.isNotDuplicate = function (track) {
 }
 
 TrackBuddy.prototype.updateInterval = function () {
-  callNowPlayingAPI()
-    .catch(err => {
-      throw new Error(err)
-    })
-    .then(res => {
-      if (res !== 'call failed') {
-        this.sendTrackToBackground(res[1], 'main')
-        this.sendTrackToBackground(res[2], 'disco')
-        this.sendTrackToBackground(res[4], 'dream')
-        this.sendTrackToBackground(res[5], 'garden')
-      }
-    })
+  const trackListUpdateInterval = window.setInterval(() => {
+    callNowPlayingAPI()
+      .catch(err => {
+        window.clearInterval(trackListUpdateInterval)
+        console.error(err)
+        throw new Error(err)
+      })
+      .then(res => {
+        if (res !== 'call failed') {
+          this.sendTrackToBackground(res[1], 'main')
+          this.sendTrackToBackground(res[2], 'disco')
+          this.sendTrackToBackground(res[4], 'dream')
+          this.sendTrackToBackground(res[5], 'garden')
+        } else {
+          window.clearInterval(trackListUpdateInterval)
+        }
+      })
+  }, 15000)
 }
 
 TrackBuddy.prototype.sendTrackToBackground = function (trackObj, channel) {
