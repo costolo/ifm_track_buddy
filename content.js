@@ -107,7 +107,6 @@ const formatDate = () => {
 const init = () => {
   const tb = new TrackBuddy()
   tb.updateInterval()
-  console.log(tb.tracks)
 
   window.chrome.runtime.onMessage.addListener((msg, sender, response) => {
     if ((msg.from === 'popup') && (msg.subject === 'clicked')) {
